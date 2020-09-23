@@ -274,6 +274,24 @@ public class ImageUtil {
         return Bitmap.createBitmap(image, 0, 0, width_new, height_new);
     }
 
+    //按比例裁剪bitmap
+    public static Bitmap clipBitmapCenter(Bitmap image, int x, int y) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        int width_new = 0;
+        int height_new = 0;
+        //以高度为准裁剪
+        if (((double) width) / height > ((double) x) / y) {
+            width_new = height * x / y;
+            height_new = height;
+        } else {
+            width_new = width;
+            height_new = width * y / x;
+        }
+        return Bitmap.createBitmap(image, (width - width_new)/2, (height - height_new)/2, width_new, height_new);
+    }
+
     //将图片缩放成指定大小，如果是小图则不放大
     public static Bitmap zoomImageEx(Bitmap bgimage, double newWidth,
                                      double newHeight) {
@@ -297,10 +315,10 @@ public class ImageUtil {
         else if((gravity& CENTER_VERTICAL) == CENTER_VERTICAL){
             iy = img_dst.getHeight()/2 - img_src.getHeight()/2;
         }
-        if (gravity == LEFT) {
+        if ((gravity & LEFT) == LEFT) {
             ix = 0;
         }
-        else if (gravity == RIGHT) {
+        else if ((gravity & RIGHT) == RIGHT) {
             ix = img_dst.getWidth() - img_src.getWidth();
         }
         else if ((gravity & CENTER_HORIZONTAL)==CENTER_HORIZONTAL) {
@@ -319,7 +337,7 @@ public class ImageUtil {
     public static Bitmap jsonBitmap(Context context, String jsonStr) throws JSONException {
 
         JSONObject object = new JSONObject(jsonStr);
-        String path = object.getString("path");
+        String path = object.optString("path");
         int maxWidth = object.getInt("maxWidth");
         int maxHeight = object.getInt("maxHeight");
         Bitmap bitmap = Bitmap.createBitmap(maxWidth, maxHeight, Bitmap.Config.ARGB_8888);
@@ -351,7 +369,7 @@ public class ImageUtil {
             if (obj_text_item.has("shadowColor")) {
                 double shadowX = obj_text_item.getDouble("shadowX");
                 double shadowY = obj_text_item.getDouble("shadowY");
-                double radius = obj_text_item.getDouble("radius ");
+                double radius = obj_text_item.getDouble("radius");
                 String shadowColor = obj_text_item.getString("shadowColor");
                 paint_text.setShadowLayer((float) radius, (float) shadowX, (float) shadowY, XmlUtil.getColor(shadowColor));
             }

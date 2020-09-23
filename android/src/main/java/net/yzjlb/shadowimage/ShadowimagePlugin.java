@@ -75,9 +75,13 @@ public class ShadowimagePlugin implements FlutterPlugin, MethodCallHandler {
       String srcPath = args.get("src");
       String gravity = args.get("gravity");
       String format = args.get("format");
-      Bitmap dst = BitmapFactory.decodeFile(dstPath);
-      Bitmap src = BitmapFactory.decodeFile(srcPath);
+      String out_path = args.get("out");
+      Bitmap dst_temp = BitmapFactory.decodeFile(dstPath).copy(Bitmap.Config.ARGB_8888,true);
+      Bitmap src_temp = BitmapFactory.decodeFile(srcPath);
       File file_out = new File(context.getExternalCacheDir(),"out_synthesis.png");
+      if(out_path!=null){
+        file_out = new File(out_path);
+      }
       int gravity_value = 0;
 
       if(gravity.indexOf("left")>=0){
@@ -95,7 +99,15 @@ public class ShadowimagePlugin implements FlutterPlugin, MethodCallHandler {
       if(gravity.indexOf("center")>=0){
         gravity_value |= ImageUtil.CENTER;
       }
-       Bitmap bitmap = ImageUtil.synthesisImg(dst,src,gravity_value);
+      dst_temp = ImageUtil.clipBitmapCenter(dst_temp, src_temp.getWidth(),src_temp.getHeight());
+      dst_temp = ImageUtil.zoomImage(dst_temp, src_temp.getWidth(),src_temp.getHeight());
+//       if(dst_temp.getWidth() < src_temp.getWidth()){
+//         dst_temp = ImageUtil.zoomImage(dst_temp, dst_temp.getWidth() * src_temp.getWidth()/dst_temp.getWidth(),dst_temp.getHeight() * src_temp.getWidth() /  dst_temp.getWidth());
+//       }
+//       else if(dst_temp.getWidth() > src_temp.getWidth()){
+//         dst_temp = ImageUtil.zoomImage(dst_temp, dst_temp.getWidth() * src_temp.getWidth()/dst_temp.getWidth(),dst_temp.getHeight() * src_temp.getWidth()/dst_temp.getWidth());
+//       }
+       Bitmap bitmap = ImageUtil.synthesisImg(dst_temp,src_temp,gravity_value);
        if(format.equals("jpg")){
          ImageUtil.saveBitmapToJPG(bitmap,60, file_out);
        }
@@ -105,6 +117,30 @@ public class ShadowimagePlugin implements FlutterPlugin, MethodCallHandler {
 
        map.put("path",file_out.getAbsolutePath());
        result.success(map);
+    }
+    else if(call.method.equals("rotateImg")){
+      HashMap<String,String> map = new HashMap<>();
+      map.put("type","success");
+      HashMap<String,String> args = (HashMap<String, String>) call.arguments;
+      String rotate = args.get("rotate");
+      String imgPath = args.get("path");
+      String format = args.get("format");
+      String out_path = args.get("out");
+      Bitmap src_temp = BitmapFactory.decodeFile(imgPath);
+      Bitmap temp = ImageUtil.rotateBimap(src_temp, Double.valueOf(rotate).floatValue());
+      File file_out = new File(context.getExternalCacheDir(),"out_rotate.png");
+      if(out_path!=null){
+        file_out = new File(out_path);
+      }
+      if(format.equals("jpg")){
+        ImageUtil.saveBitmapToJPG(temp,60, file_out);
+      }
+      else if(format.equals("png")){
+        ImageUtil.saveBitmapToPNG(temp,file_out);
+      }
+      map.put("type","success");
+      map.put("path",file_out.getAbsolutePath());
+      result.success(map);
     }
     else {
       result.notImplemented();
