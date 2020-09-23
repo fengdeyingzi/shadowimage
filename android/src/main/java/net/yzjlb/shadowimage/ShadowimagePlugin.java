@@ -53,8 +53,13 @@ public class ShadowimagePlugin implements FlutterPlugin, MethodCallHandler {
     else if(call.method.equals("getJsonBitmap")){
       HashMap<String,String> map = new HashMap<>();
       HashMap<String,String> args = (HashMap<String, String>) call.arguments;
+      String out_path = args.get("out");
       File file_out = new File(context.getExternalCacheDir(),"out.png");
+      if(out_path!=null){
+        file_out = new File(out_path);
+      }
       map.put("type","success");
+
       try {
         Bitmap bitmap = ImageUtil.jsonBitmap(context, args.get("json"));
         ImageUtil.saveBitmapToPNG(bitmap, file_out);
