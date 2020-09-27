@@ -58,6 +58,7 @@ import java.util.ArrayList;
         y:0,
         alpha:"50",
         tint:"#333333",
+        layout_gravity:"left|top"
     }],
     list_effects:[{
     name:"alpha",
@@ -334,13 +335,13 @@ public class ImageUtil {
     }
 
     //通过json格式处理图片 生成水印
-    public static Bitmap jsonBitmap(Context context, String jsonStr) throws JSONException {
-
+    public static Bitmap jsonBitmap(Context context, String jsonStr,String dir) throws JSONException {
+        File file_dir = new File(dir);
         JSONObject object = new JSONObject(jsonStr);
         String path = object.optString("path");
-        int maxWidth = object.getInt("maxWidth");
-        int maxHeight = object.getInt("maxHeight");
-        Bitmap bitmap = Bitmap.createBitmap(maxWidth, maxHeight, Bitmap.Config.ARGB_8888);
+        int width = object.getInt("width");
+        int height = object.getInt("height");
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         JSONArray array_text = object.getJSONArray("list_text");
         JSONArray array_img = object.getJSONArray("list_img");
@@ -400,6 +401,12 @@ public class ImageUtil {
             int y = obj_text_item.getInt("y");
             int w = obj_text_item.getInt("w");
             int h = obj_text_item.getInt("h");
+            if(x<0){
+                x = bitmap.getWidth()+x;
+            }
+            if(y<0){
+                y = bitmap.getHeight()+y;
+            }
             Rect rect_draw = new Rect(x, y, x + w, y + h);
             if (gravity.indexOf("left") >= 0) {
                 gravity_value |= LEFT;
@@ -438,7 +445,7 @@ public class ImageUtil {
             String img_path = obj_img_item.getString("path");
             Paint paint_img = new Paint();
             paint_img.setAntiAlias(true);
-            Bitmap bitmap_img = BitmapFactory.decodeFile(img_path);
+            Bitmap bitmap_img = BitmapFactory.decodeFile(new File(file_dir,img_path).getPath());
             int ix = 0;
             int iy = 0;
             int x = obj_img_item.getInt("x");

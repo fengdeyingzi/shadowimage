@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shadowimage.iml" filepath="$PROJECT_DIR$/.idea/modules/shadowimage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/net.yzjlb.shadowimage.shadowimage.iml" filepath="$PROJECT_DIR$/.idea/modules/net.yzjlb.shadowimage.shadowimage.iml" />
     </modules>
   </component>
 </project>

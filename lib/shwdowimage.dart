@@ -12,10 +12,11 @@ class Shadowimage {
     return version;
   }
   //获取水印图片
-  static Future<Map<String,String>> jsonPath(String jsonStr, String outPath) async{
+  static Future<Map<String,String>> jsonPath(String jsonStr,String dir, String outPath) async{
     Map<String,String> args = {
       "json":jsonStr,
-      "out": outPath
+      "out": outPath,
+      "dir":dir
     };
      var reages = await _channel.invokeMethod("getJsonBitmap",args);
      if(reages == null){

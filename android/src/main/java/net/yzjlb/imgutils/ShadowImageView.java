@@ -38,8 +38,8 @@ public class ShadowImageView extends ImageView {
     }
     
     //传递json给image
-    public void setJsonImage(String jsonStr) throws JSONException {
-        Bitmap bitmap = ImageUtil.jsonBitmap(getContext(),jsonStr);
+    public void setJsonImage(String jsonStr, String dir) throws JSONException {
+        Bitmap bitmap = ImageUtil.jsonBitmap(getContext(),jsonStr,dir);
         setImageBitmap(bitmap);
     }
     

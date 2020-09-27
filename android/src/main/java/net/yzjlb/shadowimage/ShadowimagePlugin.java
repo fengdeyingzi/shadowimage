@@ -61,7 +61,7 @@ public class ShadowimagePlugin implements FlutterPlugin, MethodCallHandler {
       map.put("type","success");
 
       try {
-        Bitmap bitmap = ImageUtil.jsonBitmap(context, args.get("json"));
+        Bitmap bitmap = ImageUtil.jsonBitmap(context, args.get("json"),args.get("dir"));
         ImageUtil.saveBitmapToPNG(bitmap, file_out);
       } catch (JSONException e) {
         map.put("type","error");
