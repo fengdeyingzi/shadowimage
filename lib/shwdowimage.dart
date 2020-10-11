@@ -13,6 +13,7 @@ class Shadowimage {
   }
   //获取水印图片
   static Future<Map<String,String>> jsonPath(String jsonStr,String dir, String outPath) async{
+    print("开始获取水印图片");
     Map<String,String> args = {
       "json":jsonStr,
       "out": outPath,
@@ -27,10 +28,12 @@ class Shadowimage {
         result[k] = v;
         print('${k}: ${v}');
       });
+    print("获取水印图片完成${result}");
     return result;
   }
 //两张图片合成一张
   static Future<String> imgSynthesis(String path, String templateImgPath,String gravity, String outPath) async{
+    print("两张图片合成一张");
     Map<String,String> args = {
       "dst":path,
       "src":templateImgPath,
@@ -44,11 +47,13 @@ class Shadowimage {
       result[k] = v;
       print('${k}: ${v}');
     });
+    print("合成完成${result}");
     return result["path"];
   }
   
   //旋转图片
   static Future<String> imgRotate(String path, String rotate) async{
+    print("旋转图片");
     Map<String,String> args = {
       "path":path,
       "rotate":rotate,
@@ -62,6 +67,7 @@ class Shadowimage {
       result[k] = v;
       print('${k}: ${v}');
     });
+    print("旋转图片完成${result}");
     if(result["type"] == "success"){
       return result["path"];
     }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:shadowimage/shadowimage.dart';
+import 'package:shadowimage/shwdowimage.dart';
 
 void main() {
   runApp(MyApp());

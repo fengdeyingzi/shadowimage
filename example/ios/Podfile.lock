@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - shadowimage (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - shadowimage (from `.symlinks/plugins/shadowimage/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  shadowimage:
+    :path: ".symlinks/plugins/shadowimage/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  shadowimage: ba91ed128cf834e89cb488fb09b65fc3298f6eae
+
+PODFILE CHECKSUM: c1b34269bf95e90b6647bf1a6afe1ab381fe5ad6
+
+COCOAPODS: 1.9.0.beta.2
