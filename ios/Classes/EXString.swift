@@ -144,6 +144,48 @@ extension String {
         let range = st ..< en
         return self.substring(with:range)
     }
+    
+    //get first char(string) from input a string
+//    func getFirstChar(str:String) -> String {
+//        print("str=\(str)")
+//        var firstChar:String = ""
+//        firstChar = str[Range(start: str.startIndex, end: str.startIndex.advancedBy(1))]
+//        print("firstChar=\(firstChar)")
+//        return firstChar
+//    }
+//
+//    //get last char(string) from input a string
+//    func getLastChar(str:String) -> String {
+//        var lastChar:String = ""
+//        lastChar = str[Range(str.endIndex.(-1), in:str.endIndex )!]
+//        return lastChar
+//    }
+    
+    func charAt(_ index:Int) -> String{
+        if(index == self.count-1){
+           
+            return String(self.suffix(1))
+        }
+        let st = self.index(self.startIndex, offsetBy: index)
+        let en = self.index(st, offsetBy:1)
+        let range = st ..< en
+        return self.substring(with:range)
+    }
+//    func charAt(index:Int)->Character?{
+//           if index >= self.count || index < 0{
+//               return nil
+//           }
+//           return self[self.characters.startIndex.advancedBy(index)]
+//       }
+    
+    func toInt() -> Int{
+           var intFromCharacter:Int = 0
+           for scalar in self.unicodeScalars
+           {
+               intFromCharacter = Int(scalar.value)
+           }
+           return intFromCharacter
+    }
 
     /// 字符串的长度
     var length:Int {
@@ -168,7 +210,7 @@ extension String {
      
          - returns: The height.
          */
-        func heightWithStringAttributes(attributes : [NSAttributedString.Key : NSObject], fixedWidth : CGFloat) -> CGFloat {
+        func heightWithStringAttributes(attributes : [NSAttributedString.Key : Any], fixedWidth : CGFloat) -> CGFloat {
      
 //            guard self.count >  && fixedWidth >  else {
 //
@@ -211,7 +253,7 @@ extension String {
      
          - returns: The width.
          */
-        func widthWithStringAttributes(attributes : [NSAttributedString.Key : NSObject]) -> CGFloat {
+        func widthWithStringAttributes(attributes : [NSAttributedString.Key : Any]) -> CGFloat {
      
           
      
@@ -245,4 +287,18 @@ extension String {
         }
     
 
+}
+
+//Character扩展代码
+extension Character
+{
+    func toInt() -> Int
+    {
+        var intFromCharacter:Int = 0
+        for scalar in String(self).unicodeScalars
+        {
+            intFromCharacter = Int(scalar.value)
+        }
+        return intFromCharacter
+    }
 }

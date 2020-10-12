@@ -80,7 +80,7 @@ class ImageUtil{
         */
         var attr =  [NSAttributedString.Key.font : UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         var def_width = c.widthWithStringAttributes(attributes: attr)
-        var paint_width = c.widthWithStringAttributes(attributes: paint.getAttrObject())
+        var paint_width = c.widthWithStringAttributes(attributes: paint.getAttr())
         print("paint_width \(paint_width) textSize \(paint.getTextSize())\n")
         return paint_width
     }
@@ -201,7 +201,7 @@ class ImageUtil{
 //        c.draw(in: CGRect(x:x, y:y, width:width, height:CGFloat(paint.getTextSize()!+100)), withAttributes:paint.getAttrObject());
 //         c.draw(in: CGRect(x:x, y:y, width:300, height:300), withAttributes:attr);
         var nstext = NSString(string: c)
-        nstext.draw(at: CGPoint(x: x, y: y), withAttributes:paint.getAttrObject())
+        nstext.draw(at: CGPoint(x: x, y: y), withAttributes:paint.getAttr())
         print("flutter: N2J_drawText(\(c),\(x),\(y))\n")
        }
     
@@ -310,6 +310,7 @@ class ImageUtil{
 //        let object = JSONSerialization.JSONObjectWithData(nsdata, options: JSONSerialization.ReadingOptions.MutableContainers, error: nil) as NSDictionary
         do{
             let object = try JSONSerialization.jsonObject(with: nsdata!, options: JSONSerialization.ReadingOptions.mutableLeaves) as! Dictionary<String, Any>
+            
             let width = object["width"] as! Int
             let height:Int = object["height"] as! Int
             // 1.3.开始绘制图片的大小
@@ -326,9 +327,17 @@ class ImageUtil{
             //画文字
             for item in array_text {
                 let text = item["text"] as! String
-                var fontSize = item["fontSize"] as! Int
+                var fontSize:Int = 0
+                if(item["fontSize"] is String){
+                    fontSize = Str.atoi(item["fontSize"] as! String) * 2
+                }
+                else{
+                    fontSize = item["fontSize"] as! Int * 2
+                }
+                
                 var paint_text = Paint();
                 var paint_background = Paint();
+                paint_text.setTextSize(size: CGFloat(fontSize))
                 print("flutter: 画文字\(text)\n")
 //                var context:CGContext = CGContext.ini
                 if(item["font"] != nil){
@@ -338,14 +347,15 @@ class ImageUtil{
                 if(item["shadowColor"] != nil){
                     var shadowX:CGFloat = CGFloat(item["shadowX"] as! Double)
                     var shadowY = CGFloat(item["shadowY"] as! Double)
-                    var shadowColor = ColorUtil.hexToUIColor(hex: item["shadowColor"] as! String)
+                    var shadowColor:Int = ColorUtil.getColor(item["shadowColor"] as! String)
+                    
                     var radius = CGFloat(item["radius"] as! Double)
-                    paint_text.setShadowLayer(blur: radius, shadowX: shadowX, shadowY: shadowY, shadowColor: shadowColor)
+                    paint_text.setShadowLayer(blur: radius, shadowX: shadowX, shadowY: shadowY, shadowColor: ColorUtil.getUIColor(shadowColor))
                 }
                 
                 if(item["textColor"] != nil){
-                    var textColor:UIColor = ColorUtil.hexToUIColor(hex:item["textColor"] as! String)
-                    paint_text.setUIColor(textColor)
+                    var textColor:Int = ColorUtil.getColor(item["textColor"] as! String)
+                    paint_text.setColor((textColor))
                 }
                 if(item["type"] != nil){
                     var type = item["type"] as! String
@@ -394,13 +404,18 @@ class ImageUtil{
                 if (item["backgroundColor"] != nil) {
                     var backgroundColor:String = item["backgroundColor"] as! String
 //                               paint_background.setColor(XmlUtil.getColor(backgroundColor))
-                    paint_background.setUIColor(ColorUtil.hexToUIColor(hex: backgroundColor))
+                    paint_background.setColor(ColorUtil.getColor(backgroundColor))
+                    NSLog("背景色:%x\n",ColorUtil.getColor(backgroundColor))
+                    
                     print("paint_background \(backgroundColor) \(paint_background.toString())\n")
                     paint_background.initGraphics()
+//                    context!.setFillColor(UIColor(red: 0.2, green: 0.8, blue: 0.2, alpha: 0.1).cgColor)
 //                               canvas.drawRect(rect_draw, paint_background);
 //                    bitmap.draw(in: rect_draw)
                     //进行矩形的绘制 和填充
-                    context!.fill(rect_draw)
+//                    context!.fill(rect_draw)
+                    context!.addRect(rect_draw)
+                    context!.fillPath()
                           //描边的矩形 在绘制之前都可以进行填充
 //                          CGContextStrokeRect(context, CGRect(x: 100, y: 100, width: 20, height: 20))
 //                               Log.i(TAG, "backgroundColor:" + backgroundColor);
@@ -496,16 +511,16 @@ class ImageUtil{
                 
             }
             
-            
+            // 1.6.获取已经绘制好的
+                   var img_dst = UIGraphicsGetImageFromCurrentImageContext()!
+                   // 1.7.结束绘制
+                   UIGraphicsEndImageContext()
+                  return img_dst
         } catch{
-            print("json转换成map失败%s",error)
-            
+            print("json转换成map失败",error)
+
         }
-        // 1.6.获取已经绘制好的
-        var img_dst = UIGraphicsGetImageFromCurrentImageContext()!
-        // 1.7.结束绘制
-        UIGraphicsEndImageContext()
-       return img_dst
+       
                
 //           File file_dir = new File(dir);
 //                JSONObject object = new JSONObject(jsonStr);
@@ -644,6 +659,7 @@ class ImageUtil{
 //                }
 //
 //                return bitmap;
+        return nil
     }
     
     
