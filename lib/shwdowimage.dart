@@ -50,6 +50,22 @@ class Shadowimage {
     print("合成完成${result}");
     return result["path"];
   }
+
+  //两张图片合成一张
+  static Future<String> imgDirection(String path) async{
+    print("获取图片方向");
+    Map<String,String> args = {
+      "path":path,
+      "format":"jpg"
+    };
+    var reages = await _channel.invokeMethod("imgDirection",args);
+    Map<String,String> result = new Map();
+    reages.forEach((k,v){
+      result[k] = v;
+      print('${k}: ${v}');
+    });
+    return result["direction"];
+  }
   
   //旋转图片
   static Future<String> imgRotate(String path, String rotate) async{

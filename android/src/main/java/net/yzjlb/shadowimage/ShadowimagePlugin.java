@@ -123,6 +123,21 @@ public class ShadowimagePlugin implements FlutterPlugin, MethodCallHandler {
        map.put("path",file_out.getAbsolutePath());
        result.success(map);
     }
+    else if(call.method.equals("imgDirection")){
+      HashMap<String,String> map = new HashMap<>();
+      map.put("type","success");
+      HashMap<String,String> args = (HashMap<String, String>) call.arguments;
+      String imgPath = args.get("path");
+      String format = args.get("format");
+
+
+
+
+
+      map.put("type","success");
+      map.put("direction",""+ImageUtil.getDirection(imgPath));
+      result.success(map);
+    }
     else if(call.method.equals("rotateImg")){
       HashMap<String,String> map = new HashMap<>();
       map.put("type","success");

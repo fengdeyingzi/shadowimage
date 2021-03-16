@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.media.ExifInterface;
 import android.util.Log;
 import android.util.Xml;
 
@@ -332,6 +333,26 @@ public class ImageUtil {
         Canvas canvas = new Canvas(img_dst);
         canvas.drawBitmap(img_src, ix, iy, null);
         return img_dst;
+    }
+
+    public static int getDirection(String filename){
+//        val sFileName = "/sdcard/DCIM/CameraXDemo/1.jpg"
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int direction = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);//获取图片方向
+        switch (direction){
+            case ExifInterface.ORIENTATION_ROTATE_180 :
+                return 180;
+            case ExifInterface.ORIENTATION_ROTATE_90 :
+                return 90;
+            case ExifInterface.ORIENTATION_ROTATE_270 :
+                return 270;
+        }
+        return 0;
     }
 
     //通过json格式处理图片 生成水印
