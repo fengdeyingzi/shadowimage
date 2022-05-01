@@ -1,7 +1,9 @@
 
 import 'dart:async';
-
+import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:exif/exif.dart';
+
 
 class Shadowimage {
   static const MethodChannel _channel =
@@ -51,20 +53,36 @@ class Shadowimage {
     return result["path"];
   }
 
-  //两张图片合成一张
-  static Future<String> imgDirection(String path) async{
-    print("获取图片方向");
-    Map<String,String> args = {
-      "path":path,
-      "format":"jpg"
-    };
-    var reages = await _channel.invokeMethod("imgDirection",args);
-    Map<String,String> result = new Map();
-    reages.forEach((k,v){
-      result[k] = v;
-      print('${k}: ${v}');
-    });
-    return result["direction"];
+//获取图片旋转角度
+  static Future<int> imgOrientation(String path) async{
+      var fileBytes = null;
+
+    fileBytes = File(path).readAsBytesSync();
+  
+  final data = await readExifFromBytes(fileBytes);
+  if (data.isEmpty) {
+    print("No EXIF information found");
+    return 0;
+  }
+  if (data.containsKey('Image Orientation')) {
+    print('照片旋转角度：${data["Image Orientation"]}');
+    var orientation = data["Image Orientation"];
+    if(orientation == "Rotated 90 CW"){
+      return 90;
+    } else if(orientation == "Rotated 90 CCW"){
+      return 270;
+    } else if(orientation == "Rotated 180"){
+      return 180;
+    } else if(orientation == "Rotated 270 CW"){
+      return 270;
+    } else if(orientation == "Rotated 270 CCW"){
+      return 90;
+    }
+  }else{
+    print("没有获取到照片角度");
+  }
+  
+    return 0;
   }
   
   //旋转图片
